@@ -2,9 +2,15 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const path = require('path');
 
 module.exports = {
-    stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
-    addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/addon-postcss'],
+    stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
+    addons: [
+        '@storybook/addon-interactions',
+        '@storybook/addon-essentials',
+        '@storybook/addon-postcss',
+        '@chromatic-com/storybook',
+    ],
     staticDirs: ['public'],
+
     babel: async (options) => ({
         ...options,
         plugins: [
@@ -13,6 +19,7 @@ module.exports = {
             '@babel/plugin-proposal-private-property-in-object',
         ],
     }),
+
     webpackFinal: async (config) => {
         config.resolve.plugins = [
             new TsconfigPathsPlugin({
@@ -21,5 +28,16 @@ module.exports = {
         ];
 
         return config;
+    },
+
+    framework: {
+        name: '@storybook/nextjs',
+        options: {},
+    },
+
+    docs: {},
+
+    typescript: {
+        reactDocgen: 'react-docgen-typescript',
     },
 };

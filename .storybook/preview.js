@@ -1,17 +1,5 @@
-import { addDecorator } from '@storybook/react';
-import * as NextImage from 'next/image';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { theme } from '../src/themes';
-
-export const parameters = {
-    actions: { argTypesRegex: '^on[A-Z].*' },
-    controls: {
-        matchers: {
-            color: /(background|color)$/i,
-            date: /Date$/,
-        },
-    },
-};
 
 export const GlobalStyle = createGlobalStyle`
   html,
@@ -33,22 +21,24 @@ export const GlobalStyle = createGlobalStyle`
 `;
 
 // Theme 적용
-addDecorator((story) => (
-    <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        {story()}
-    </ThemeProvider>
-));
+export const decorators = [
+    (Story) => (
+        <ThemeProvider theme={theme}>
+            <GlobalStyle />
+            <Story />
+        </ThemeProvider>
+    ),
+];
 
-// next/image 교체
-const OriginalNextImage = NextImage.default;
-
-Object.defineProperty(NextImage, 'default', {
-    configurable: true,
-    value: (props) =>
-        typeof props.src === 'string' ? (
-            <OriginalNextImage {...props} unoptimized blurDataURL={props.src} />
-        ) : (
-            <OriginalNextImage {...props} unoptimized />
-        ),
-});
+export const parameters = {
+    actions: { argTypesRegex: '^on[A-Z].*' },
+    controls: {
+        matchers: {
+            color: /(background|color)$/i,
+            date: /Date$/,
+        },
+    },
+    nextImage: {
+        unoptimized: true,
+    },
+};
